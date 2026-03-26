@@ -38,7 +38,7 @@ class CharacterListScreen extends StatelessWidget {
                 crossAxisCount: 3,
                 mainAxisSpacing: 2,
                 crossAxisSpacing: 10,
-                childAspectRatio: 0.8,
+                childAspectRatio: 0.7,
               ),
               itemBuilder: (_, index) {
                 var data = provider.results[index];
