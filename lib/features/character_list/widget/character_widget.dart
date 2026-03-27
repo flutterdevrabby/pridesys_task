@@ -22,7 +22,6 @@ class CharacterWidget extends StatelessWidget {
           width: 120.w,
           height: 80,
         ),
-
         // Name
         Text(
           data.name ?? "N/A",
@@ -35,7 +34,7 @@ class CharacterWidget extends StatelessWidget {
         Text(
           data.species ?? "N/A",
           maxLines: 2,
-          overflow:TextOverflow .ellipsis,
+          overflow: TextOverflow.ellipsis,
           style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
             fontSize: 12.sp,
             color: Colors.blue,

@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pridesys_task/common_widget/custom_network_image.dart';
 import 'package:pridesys_task/constants/text_font_style.dart';
+import 'package:pridesys_task/features/favorite/provider/favorite_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../character_list/model/character_response.dart';
 import '../widgets/character_info.dart';
@@ -32,12 +34,27 @@ class CharacterDetailsScreen extends StatelessWidget {
             context.pop();
           },
         ),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.favorite))],
+        actions: [
+          Consumer<FavoriteProvider>(
+            builder: (context, favoriteProvider, child) {
+              final bool isFav = favoriteProvider.isFavorite(data.id);
+              return IconButton(
+                onPressed: () {
+                  favoriteProvider.toggleFavorite(data);
+                },
+                color: isFav ? Colors.red : Colors.black,
+                icon: Icon(
+                  isFav ? Icons.favorite : Icons.favorite_border_outlined,
+                ),
+              );
+            },
+          ),
+        ],
       ),
 
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment:CrossAxisAlignment .start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // Image

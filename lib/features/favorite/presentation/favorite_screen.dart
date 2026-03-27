@@ -1,23 +1,21 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pridesys_task/features/character_list/provider/character_list_provider.dart';
-import 'package:pridesys_task/routes/routes.dart';
+import 'package:pridesys_task/features/favorite/provider/favorite_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../constants/text_font_style.dart';
-import '../widget/character_widget.dart';
+import '../../../routes/routes.dart';
+import '../../character_list/widget/character_widget.dart';
 
-class CharacterListScreen extends StatefulWidget {
-  const CharacterListScreen({super.key});
+class FavoriteScreen extends StatefulWidget {
+  const FavoriteScreen({super.key});
 
   @override
-  State<CharacterListScreen> createState() => _CharacterListScreenState();
+  State<FavoriteScreen> createState() => _FavoriteScreenState();
 }
 
-class _CharacterListScreenState extends State<CharacterListScreen> {
+class _FavoriteScreenState extends State<FavoriteScreen> {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -42,35 +40,41 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text("Character"),
-        centerTitle: false,
-        titleTextStyle: TextFontStyle.headLine18CFFFFFFW700,
         backgroundColor: Colors.black,
-        actions: [
-          IconButton.outlined(
-            onPressed: () {
-              context.push(AppRoutes.favoriteScreen);
-            },
-            tooltip: "All Favorite",
-            icon: Icon(Icons.favorite),
-            color: Colors.red,
+        centerTitle: false,
+        title: Text(
+          "My Favorite Characters",
+          style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
+            color: Colors.white,
+            fontSize: 16.sp,
           ),
-        ],
+        ),
+        leading: BackButton(
+          color: Colors.white,
+          onPressed: () {
+            // Back character screen
+            context.pop();
+          },
+        ),
       ),
 
-      body: Consumer<CharacterListProvider>(
-        builder: (context, provider, child) {
-          if (provider.isLoading) {
-            return Center(child: CircularProgressIndicator());
-          } else if (provider.errorMessage != null) {
-            log(provider.errorMessage.toString());
-            return Center(child: Text(provider.errorMessage.toString()));
+      body: Consumer<FavoriteProvider>(
+        builder: (context, favoriteProvider, child) {
+          final favoriteList = favoriteProvider.favoriteCharacters;
+
+          if (favoriteList.isEmpty) {
+            return Center(
+              child: Text(
+                "No favorites added yet!",
+                style: TextFontStyle.headLine18CFFFFFFW700,
+              ),
+            );
           } else {
             return GridView.builder(
               controller: _scrollController,
               shrinkWrap: true,
               padding: EdgeInsets.symmetric(horizontal: 16.w),
-              itemCount: provider.results.length,
+              itemCount: favoriteList.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 mainAxisSpacing: 2,
@@ -78,7 +82,7 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
                 childAspectRatio: 0.7,
               ),
               itemBuilder: (_, index) {
-                var data = provider.results[index];
+                var data = favoriteList[index];
                 return GestureDetector(
                   onTap: () {
                     context.push(AppRoutes.characterDetailsScreen, extra: data);

@@ -12,7 +12,7 @@ void main() async {
 
   // Initialize Hive
   await Hive.initFlutter();
-  
+
   // Registered all adapter here
   Hive.registerAdapter(CharacterResponseAdapter());
   Hive.registerAdapter(InfoAdapter());
@@ -20,6 +20,9 @@ void main() async {
   Hive.registerAdapter(LocationAdapter());
   // Hive Box Name is here
   await Hive.openBox<CharacterResponse>('apiBox');
+
+  // Favorite Box
+   await Hive.openBox<Result>('favoriteBox');
   runApp(const MyApp());
 }
 

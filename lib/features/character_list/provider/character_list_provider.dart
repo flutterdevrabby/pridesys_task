@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -36,7 +34,7 @@ class CharacterListProvider extends ChangeNotifier {
 
       results = characterResponse.results ?? [];
     } catch (e) {
-      log("Error or Offline: $e");
+      errorMessage = e.toString();
     } finally {
       isLoading = false;
       notifyListeners();
