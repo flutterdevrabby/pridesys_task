@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+
 import 'providers/register_provider.dart';
 import 'routes/routes.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+
+    // Initialize Hive
+  await Hive.initFlutter();
+
+  // Register the User adapter
+ // Hive.registerAdapter(UserAdapter());
+
+  await Hive.openLazyBox('characterListBox');
   runApp(const MyApp());
 }
 
