@@ -1,7 +1,15 @@
 import 'dart:convert';
 
+import 'package:hive_flutter/hive_flutter.dart';
+
+part 'character_response.g.dart';
+
+@HiveType(typeId: 0)
 class CharacterResponse {
+  @HiveField(0)
   Info? info;
+
+  @HiveField(1)
   List<Result>? results;
 
   CharacterResponse({this.info, this.results});
@@ -35,10 +43,15 @@ class CharacterResponse {
   };
 }
 
+@HiveType(typeId: 1)
 class Info {
+  @HiveField(0)
   int? count;
+  @HiveField(1)
   int? pages;
+  @HiveField(2)
   String? next;
+  @HiveField(3)
   dynamic prev;
 
   Info({this.count, this.pages, this.next, this.prev});
@@ -69,18 +82,31 @@ class Info {
   };
 }
 
+@HiveType(typeId: 2)
 class Result {
+  @HiveField(0)
   int? id;
+  @HiveField(1)
   String? name;
+  @HiveField(2)
   String? status;
+  @HiveField(3)
   String? species;
+  @HiveField(4)
   String? type;
+  @HiveField(5)
   String? gender;
+  @HiveField(6)
   Location? origin;
+  @HiveField(7)
   Location? location;
+  @HiveField(8)
   String? image;
+  @HiveField(9)
   List<String>? episode;
+  @HiveField(10)
   String? url;
+  @HiveField(11)
   DateTime? created;
 
   Result({
@@ -167,8 +193,11 @@ class Result {
   };
 }
 
+@HiveType(typeId: 3)
 class Location {
+  @HiveField(0)
   String? name;
+  @HiveField(1)
   String? url;
 
   Location({this.name, this.url});

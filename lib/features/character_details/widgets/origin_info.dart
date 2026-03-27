@@ -10,10 +10,10 @@ class OriginInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 1.sw,
-      padding: .symmetric(horizontal: 16.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
       decoration: BoxDecoration(color: Color(0xFF141e3c)),
       child: Row(
-        mainAxisAlignment: .spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           //
           Text(

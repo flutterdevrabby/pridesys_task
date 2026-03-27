@@ -13,11 +13,11 @@ class CharacterInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 1.sw,
-      padding: .symmetric(horizontal: 16.w, vertical: 6.h),
+      padding:EdgeInsets .symmetric(horizontal: 16.w, vertical: 6.h),
       decoration: BoxDecoration(color: Color(0xFF141e3c)),
       child: Column(
         spacing: 4.h,
-        mainAxisAlignment: .start,
+        mainAxisAlignment:MainAxisAlignment .start,
         children: [
           //
           _buildWidget(title: 'Species', value: data.species ?? ""),
@@ -30,7 +30,7 @@ class CharacterInfo extends StatelessWidget {
 
 Widget _buildWidget({required String title, required String value}) {
   return Row(
-    mainAxisAlignment: .spaceBetween,
+    mainAxisAlignment:MainAxisAlignment .spaceBetween,
     children: [
       // Title
       Text(

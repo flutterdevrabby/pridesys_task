@@ -13,8 +13,8 @@ class CharacterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       spacing: 3.h,
-      crossAxisAlignment: .start,
-      mainAxisAlignment: .start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         // Image
         CustomCachedNetworkImage(
@@ -27,7 +27,7 @@ class CharacterWidget extends StatelessWidget {
         Text(
           data.name ?? "N/A",
           maxLines: 2,
-          overflow: .ellipsis,
+          overflow: TextOverflow.ellipsis,
           style: TextFontStyle.headLine18CFFFFFFW700.copyWith(fontSize: 12.sp),
         ),
 
@@ -35,7 +35,7 @@ class CharacterWidget extends StatelessWidget {
         Text(
           data.species ?? "N/A",
           maxLines: 2,
-          overflow: .ellipsis,
+          overflow:TextOverflow .ellipsis,
           style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
             fontSize: 12.sp,
             color: Colors.blue,
@@ -46,7 +46,7 @@ class CharacterWidget extends StatelessWidget {
         Text(
           data.status ?? "N/A",
           maxLines: 2,
-          overflow: .ellipsis,
+          overflow: TextOverflow.ellipsis,
           style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
             fontSize: 10.sp,
             color: Colors.grey,

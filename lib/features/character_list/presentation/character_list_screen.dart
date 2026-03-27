@@ -20,14 +20,13 @@ class CharacterListScreen extends StatefulWidget {
 class _CharacterListScreenState extends State<CharacterListScreen> {
   final ScrollController _scrollController = ScrollController();
 
-
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 200) {
-      //  context.read<CharacterListProvider>().fetchMore();
+        //  context.read<CharacterListProvider>().fetchMore();
       }
     });
   }
@@ -37,7 +36,6 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
     _scrollController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +59,7 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
             return GridView.builder(
               controller: _scrollController,
               shrinkWrap: true,
-              padding: .symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               itemCount: provider.results.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,

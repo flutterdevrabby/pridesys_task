@@ -37,8 +37,8 @@ class CharacterDetailsScreen extends StatelessWidget {
 
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: .start,
-          mainAxisAlignment: .start,
+          crossAxisAlignment:CrossAxisAlignment .start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // Image
             CustomCachedNetworkImage(
@@ -66,7 +66,7 @@ class CharacterDetailsScreen extends StatelessWidget {
                 style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
                   color: Colors.green,
                   fontSize: 12.sp,
-                  fontWeight: .bold,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
