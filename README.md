@@ -72,7 +72,7 @@ This project uses **Hive** for local/offline storage.
 
 ## App Walkthrough Video
 
-> [Watch on YouTube](https://youtube.com/your-link-here)
+> [Watch on YouTube](https://youtu.be/oNvLusdsV4c)
 
 **Video covers:**
 - App overview and UI walkthrough
