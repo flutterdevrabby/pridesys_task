@@ -55,7 +55,7 @@ Alternatives like **Bloc** or **Riverpod** are more powerful but add unnecessary
 
 ---
 
-## 💾 Storage Approach — Hive
+##  Storage Approach — Hive
 
 This project uses **Hive** for local/offline storage.
 
@@ -70,9 +70,9 @@ This project uses **Hive** for local/offline storage.
 
 
 
-## 🎥 App Walkthrough Video
+## App Walkthrough Video
 
-> 📹 [Watch on YouTube](https://youtube.com/your-link-here)
+> [Watch on YouTube](https://youtube.com/your-link-here)
 
 **Video covers:**
 - App overview and UI walkthrough

@@ -26,8 +26,8 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
     super.initState();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 50) {
-        //  context.read<CharacterListProvider>().fetchMore();
+          _scrollController.position.maxScrollExtent - 200) {
+        context.read<CharacterListProvider>().fetchMore();
       }
     });
   }
@@ -125,9 +125,10 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
                   child: GridView.builder(
                     physics: ClampingScrollPhysics(),
                     controller: _scrollController,
-
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    // +1 for loader item
                     itemCount: provider.results.length,
+
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       mainAxisSpacing: 2,
@@ -135,6 +136,18 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
                       childAspectRatio: 0.7,
                     ),
                     itemBuilder: (_, index) {
+                      // শেষ item হলে loader দেখাও
+                      if (index == provider.results.length) {
+                        return Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      }
+
                       var data = provider.results[index];
                       return GestureDetector(
                         onTap: () {
@@ -148,6 +161,14 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
                     },
                   ),
                 ),
+
+                if (provider.isFetchingMore)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    child: Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    ),
+                  ),
               ],
             );
           }

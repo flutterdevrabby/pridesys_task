@@ -17,25 +17,6 @@ class FavoriteScreen extends StatefulWidget {
 }
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 200) {
-        //  context.read<CharacterListProvider>().fetchMore();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +53,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             );
           } else {
             return GridView.builder(
-              controller: _scrollController,
               shrinkWrap: true,
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               itemCount: favoriteList.length,
