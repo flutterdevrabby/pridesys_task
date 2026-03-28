@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -105,16 +103,12 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
 
       body: Consumer<CharacterListProvider>(
         builder: (context, provider, child) {
-          if (provider.isLoading) {
+          if (provider.isLoading && provider.results.isEmpty) {
             return Center(child: CircularProgressIndicator());
-          } else if (provider.errorMessage != null) {
-            log(provider.errorMessage.toString());
-            return Center(child: Text(provider.errorMessage.toString()));
           } else if (provider.results.isEmpty) {
-            log(provider.errorMessage.toString());
             return Center(
               child: Text(
-                "Data is not availabe!",
+                "Data is not available!",
                 style: TextFontStyle.headLine18CFFFFFFW700,
               ),
             );
@@ -126,7 +120,7 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
                     physics: ClampingScrollPhysics(),
                     controller: _scrollController,
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    // +1 for loader item
+
                     itemCount: provider.results.length,
 
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -136,7 +130,6 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
                       childAspectRatio: 0.7,
                     ),
                     itemBuilder: (_, index) {
-                      // শেষ item হলে loader দেখাও
                       if (index == provider.results.length) {
                         return Center(
                           child: Padding(

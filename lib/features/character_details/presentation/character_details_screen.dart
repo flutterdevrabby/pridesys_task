@@ -5,6 +5,7 @@ import 'package:pridesys_task/common_widget/custom_network_image.dart';
 import 'package:pridesys_task/constants/text_font_style.dart';
 import 'package:pridesys_task/features/favorite/provider/favorite_provider.dart';
 import 'package:pridesys_task/routes/routes.dart';
+import 'package:pridesys_task/utils/toast.dart';
 import 'package:provider/provider.dart';
 
 import '../../character_list/model/character_response.dart';
@@ -50,6 +51,12 @@ class CharacterDetailsScreen extends StatelessWidget {
                   return IconButton(
                     onPressed: () {
                       favoriteProvider.toggleFavorite(latestData);
+
+                      ToastUtil.showLongToast(
+                        isFav
+                            ? "Favorite removed successfully"
+                            : "Favorite added successfully",
+                      );
                     },
                     color: isFav ? Colors.red : Colors.black,
                     icon: Icon(

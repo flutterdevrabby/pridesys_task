@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:pridesys_task/constants/endpoint.dart';
+import 'package:pridesys_task/utils/toast.dart';
 
 import '../model/character_response.dart';
 
@@ -22,10 +23,14 @@ class CharacterListProvider extends ChangeNotifier {
   int page = 1;
 
   Future<void> fetchCharacter() async {
-  
+    // First load data from Local Storage cache
     if (apiBox.containsKey('cache_character_data')) {
-      results = apiBox.get('cache_character_data')?.results ?? [];
+      var cachedData = apiBox.get('cache_character_data');
+      results = cachedData?.results ?? [];
+      allResults = List.from(results);
       isLoading = false;
+      // Clear any old errors if any
+      errorMessage = null;
       notifyListeners();
     }
 
@@ -33,9 +38,7 @@ class CharacterListProvider extends ChangeNotifier {
       final response = await Dio().get("$baseUrl?page=$page");
       CharacterResponse apiResponse = CharacterResponse.fromJson(response.data);
 
-     
       hasMore = apiResponse.info?.next != null;
-
       List<Result> incomingResults = apiResponse.results ?? [];
       List<Result> updatedList = _mergeWithFavorites(incomingResults);
 
@@ -46,21 +49,21 @@ class CharacterListProvider extends ChangeNotifier {
       allResults = updatedList;
       errorMessage = null;
     } catch (e) {
-      errorMessage = e.toString();
+      if (results.isEmpty) {
+        errorMessage = e.toString();
+      }
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
+  // For Pagination
   Future<void> fetchMore() async {
-  
     if (isFetchingMore || !hasMore || _isSearching) return;
 
     isFetchingMore = true;
     notifyListeners();
-
-    await Future.delayed(Duration(milliseconds: 300));
 
     try {
       page++;
@@ -75,7 +78,6 @@ class CharacterListProvider extends ChangeNotifier {
       allResults.addAll(merged);
       results = List.from(allResults);
 
-      
       var currentCache = apiBox.get('cache_character_data');
       if (currentCache != null) {
         currentCache.results = allResults;
@@ -85,14 +87,13 @@ class CharacterListProvider extends ChangeNotifier {
       errorMessage = null;
     } catch (e) {
       page--;
-      errorMessage = e.toString();
+      ToastUtil.showLongToast('Internet not available!');
     } finally {
       isFetchingMore = false;
       notifyListeners();
     }
   }
 
-  // 
   List<Result> _mergeWithFavorites(List<Result> incoming) {
     List<Result> merged = [];
     for (var newItem in incoming) {
@@ -102,6 +103,7 @@ class CharacterListProvider extends ChangeNotifier {
     return merged;
   }
 
+  // Update for Local Data storage
   void updateCharacterLocally(Result updatedItem) async {
     int index = results.indexWhere((e) => e.id == updatedItem.id);
     if (index != -1) {
@@ -120,6 +122,7 @@ class CharacterListProvider extends ChangeNotifier {
 
   bool _isSearching = false;
 
+  // Searching Function
   void searchCharacter(String searchTitle) {
     if (searchTitle.isEmpty) {
       _isSearching = false;
@@ -136,97 +139,10 @@ class CharacterListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Search clear from list
   void clearSearch() {
     _isSearching = false;
     results = List.from(allResults);
     notifyListeners();
   }
 }
-
-// import 'package:dio/dio.dart';
-// import 'package:flutter/material.dart';
-// import 'package:hive/hive.dart';
-// import 'package:pridesys_task/constants/endpoint.dart';
-
-// import '../model/character_response.dart';
-
-// class CharacterListProvider extends ChangeNotifier {
-//   final Box<CharacterResponse> apiBox = Hive.box<CharacterResponse>('apiBox');
-
-//   CharacterListProvider() {
-//     fetchCharacter();
-//   }
-
-//   String? errorMessage;
-//   bool isLoading = true;
-//   List<Result> results = [];
-//   List<Result> allResults = [];
-//   int page = 1;
-
-//   Future<void> fetchCharacter() async {
-//     if (apiBox.containsKey('cache_character_data')) {
-//       results = apiBox.get('cache_character_data')?.results ?? [];
-//       isLoading = false;
-//       notifyListeners();
-//     }
-//     try {
-//       final response = await Dio().get("$baseUrl?page=$page");
-//       CharacterResponse apiResponse = CharacterResponse.fromJson(response.data);
-//       List<Result> incomingResults = apiResponse.results ?? [];
-//       List<Result> updatedList = [];
-//       for (var newItem in incomingResults) {
-//         int index = results.indexWhere((element) => element.id == newItem.id);
-//         if (index != -1) {
-//           updatedList.add(results[index]);
-//         } else {
-//           updatedList.add(newItem);
-//         }
-//       }
-//       apiResponse.results = updatedList;
-//       await apiBox.put('cache_character_data', apiResponse);
-//       results = updatedList;
-//       allResults = updatedList;
-//       errorMessage = null;
-//     } catch (e) {
-//       errorMessage = e.toString();
-//     } finally {
-//       isLoading = false;
-//       notifyListeners();
-//     }
-//   }
-
-//   // When User update the data -> data will updated locally in Local Storage
-//   void updateCharacterLocally(Result updatedItem) async {
-//     int index = results.indexWhere((element) => element.id == updatedItem.id);
-//     if (index != -1) {
-//       results[index] = updatedItem;
-//       var currentData = apiBox.get('cache_character_data');
-//       if (currentData != null) {
-//         currentData.results = results;
-//         await apiBox.put('cache_character_data', currentData);
-//       }
-//       notifyListeners();
-//     }
-//   }
-
-//   void searchCharacter(String searchTitle) {
-//     if (searchTitle.isEmpty) {
-//       results = List.from(allResults);
-//     } else {
-//       results = allResults
-//           .where(
-//             (item) =>
-//                 item.name!.toLowerCase().contains(searchTitle.toLowerCase()),
-//           )
-//           .toList();
-//     }
-
-//     notifyListeners();
-//   }
-
-//   // Clear search
-//   void clearSearch() {
-//     results = List.from(allResults);
-//     notifyListeners();
-//   }
-// }

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +7,7 @@ import 'package:pridesys_task/features/character_list/provider/character_list_pr
 import 'package:provider/provider.dart';
 
 import '../../../common_widget/custom_text_field.dart';
+import '../../../utils/toast.dart';
 import '../../character_list/model/character_response.dart';
 import '../widgets/update_character.dart';
 import '../widgets/update_origin.dart';
@@ -84,7 +83,7 @@ class _UpdateCharacterScreenState extends State<UpdateCharacterScreen> {
 
                     provider.updateCharacterLocally(updatedData);
 
-                    log("Updated successfully with name: ${updatedData.name}");
+                    ToastUtil.showLongToast("Data Updated successfully");
                     context.pop();
                   }
                 },
