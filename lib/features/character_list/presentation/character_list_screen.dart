@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pridesys_task/common_widget/custom_text_field.dart';
 import 'package:pridesys_task/features/character_list/provider/character_list_provider.dart';
 import 'package:pridesys_task/routes/routes.dart';
 import 'package:provider/provider.dart';
@@ -26,22 +27,27 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 50) {
-          context.read<CharacterListProvider>().fetchMore();
-
-        log(
-          "Pixel ============> ${_scrollController.position.pixels.toString()}",
-        );
-        log(
-          "maxScrollExtent ============> ${_scrollController.position.maxScrollExtent.toString()}",
-        );
+        //  context.read<CharacterListProvider>().fetchMore();
       }
     });
   }
 
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  bool _showSearch = false;
+  void _onClearAndCloseSearch() {
+    setState(() {
+      _showSearch = false;
+      _searchController.clear();
+    });
+    context.read<CharacterListProvider>().searchCharacter("");
   }
 
   @override
@@ -49,7 +55,28 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text("Character"),
+        title: _showSearch
+            ? Consumer<CharacterListProvider>(
+                builder: (context, provider, child) {
+                  return CustomTextField(
+                    controller: _searchController,
+                    hintText: "Search.....",
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.done,
+                    onChanged: (value) {
+                      provider.searchCharacter(value);
+                    },
+
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        _onClearAndCloseSearch();
+                      },
+                      icon: Icon(Icons.clear),
+                    ),
+                  );
+                },
+              )
+            : Text("Character"),
         centerTitle: false,
         titleTextStyle: TextFontStyle.headLine18CFFFFFFW700,
         backgroundColor: Colors.black,
@@ -58,9 +85,20 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
             onPressed: () {
               context.push(AppRoutes.favoriteScreen);
             },
-            tooltip: "All Favorite",
+            tooltip: "All Favorites",
             icon: Icon(Icons.favorite),
             color: Colors.red,
+          ),
+
+          IconButton.outlined(
+            onPressed: () {
+              setState(() {
+                _showSearch = !_showSearch;
+              });
+            },
+            tooltip: "Search Character",
+            icon: Icon(Icons.search),
+            color: Colors.white,
           ),
         ],
       ),
@@ -72,6 +110,14 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
           } else if (provider.errorMessage != null) {
             log(provider.errorMessage.toString());
             return Center(child: Text(provider.errorMessage.toString()));
+          } else if (provider.results.isEmpty) {
+            log(provider.errorMessage.toString());
+            return Center(
+              child: Text(
+                "Data is not availabe!",
+                style: TextFontStyle.headLine18CFFFFFFW700,
+              ),
+            );
           } else {
             return Column(
               children: [
@@ -102,30 +148,6 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
                     },
                   ),
                 ),
-
-                // ✅ Pagination loader
-                if (provider.isFetchingMore)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    child: CircularProgressIndicator(),
-                  ),
-
-                // ✅ সব শেষ হলে message
-                if (!provider.isFetchingMore && !provider.hasMore)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    child: Text(
-                      "All characters loaded",
-                      style: TextStyle(color: Colors.white54, fontSize: 12),
-                    ),
-                  ),
-
-                // যখন নিচে নতুন পেজ লোড হবে
-                // if (provider.isFetchingMore)
-                //   const Padding(
-                //     padding: EdgeInsets.symmetric(vertical: 10),
-                //     child: CircularProgressIndicator(),
-                //   ),
               ],
             );
           }
