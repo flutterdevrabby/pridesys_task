@@ -17,7 +17,7 @@ A Flutter application that displays characters from the Rick and Morty API with 
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/your-username/pridesys_task.git
+git clone https://github.com/flutterdevrabby/pridesys_task.git
 cd pridesys_task
 ```
 
