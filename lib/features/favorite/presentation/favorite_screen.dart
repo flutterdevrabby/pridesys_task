@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pridesys_task/features/character_list/provider/character_list_provider.dart';
 import 'package:pridesys_task/features/favorite/provider/favorite_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -58,8 +59,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         ),
       ),
 
-      body: Consumer<FavoriteProvider>(
-        builder: (context, favoriteProvider, child) {
+      body: Consumer2<FavoriteProvider, CharacterListProvider>(
+        builder: (context, favoriteProvider, characterProvider, child) {
           final favoriteList = favoriteProvider.favoriteCharacters;
 
           if (favoriteList.isEmpty) {
@@ -82,12 +83,20 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 childAspectRatio: 0.7,
               ),
               itemBuilder: (_, index) {
-                var data = favoriteList[index];
+                var favItem = favoriteList[index];
+
+                final latestData = characterProvider.results.firstWhere(
+                  (element) => element.id == favItem.id,
+                  orElse: () => favItem,
+                );
                 return GestureDetector(
                   onTap: () {
-                    context.push(AppRoutes.characterDetailsScreen, extra: data);
+                    context.push(
+                      AppRoutes.characterDetailsScreen,
+                      extra: latestData,
+                    );
                   },
-                  child: CharacterWidget(data: data),
+                  child: CharacterWidget(data: latestData),
                 );
               },
             );

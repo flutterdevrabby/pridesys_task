@@ -29,8 +29,8 @@ class FavoriteProvider extends ChangeNotifier {
   }
 
   // Delete all favorite Item
-  Future<void> clearAllFavorites() async {
-    await _favoriteBox.clear();
-    notifyListeners();
-  }
+  // Future<void> clearAllFavorites() async {
+  //   await _favoriteBox.clear();
+  //   notifyListeners();
+  // }
 }

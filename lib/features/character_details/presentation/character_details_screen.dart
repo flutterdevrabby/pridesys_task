@@ -46,9 +46,7 @@ class CharacterDetailsScreen extends StatelessWidget {
             actions: [
               Consumer<FavoriteProvider>(
                 builder: (context, favoriteProvider, child) {
-                  final bool isFav = favoriteProvider.isFavorite(
-                    latestData.id,
-                  );
+                  final bool isFav = favoriteProvider.isFavorite(latestData.id);
                   return IconButton(
                     onPressed: () {
                       favoriteProvider.toggleFavorite(latestData);
