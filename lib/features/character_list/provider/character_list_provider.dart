@@ -14,9 +14,9 @@ class CharacterListProvider extends ChangeNotifier {
   String? errorMessage;
   bool isLoading = true;
   List<Result> results = [];
+  
 
   Future<void> fetchCharacter() async {
-    // ১. প্রথমে লোকাল থেকে পুরো রেসপন্স চেক করুন
     if (apiBox.containsKey('cache_character_data')) {
       results = apiBox.get('cache_character_data')?.results ?? [];
       isLoading = false;
@@ -25,18 +25,49 @@ class CharacterListProvider extends ChangeNotifier {
 
     try {
       final response = await Dio().get(baseUrl);
-      CharacterResponse characterResponse = CharacterResponse.fromJson(
-        response.data,
-      );
+      CharacterResponse apiResponse = CharacterResponse.fromJson(response.data);
 
-      // ২. পুরো অবজেক্টটি 'last_response' কী-তে সেভ করুন
-      await apiBox.put('cache_character_data', characterResponse);
+      List<Result> incomingResults = apiResponse.results ?? [];
 
-      results = characterResponse.results ?? [];
+      List<Result> updatedList = [];
+
+      for (var newItem in incomingResults) {
+        int index = results.indexWhere((element) => element.id == newItem.id);
+
+        if (index != -1) {
+          updatedList.add(results[index]);
+        } else {
+          updatedList.add(newItem);
+        }
+      }
+
+      apiResponse.results = updatedList;
+
+      await apiBox.put('cache_character_data', apiResponse);
+
+      results = updatedList;
+      errorMessage = null;
     } catch (e) {
       errorMessage = e.toString();
     } finally {
       isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+
+  void updateCharacterLocally(Result updatedItem) async {
+    int index = results.indexWhere((element) => element.id == updatedItem.id);
+    if (index != -1) {
+      results[index] = updatedItem;
+
+      // হাইভ-এ পার্মানেন্টলি সেভ করা
+      var currentData = apiBox.get('cache_character_data');
+      if (currentData != null) {
+        currentData.results = results;
+        await apiBox.put('cache_character_data', currentData);
+      }
       notifyListeners();
     }
   }

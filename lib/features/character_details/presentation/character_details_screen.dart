@@ -8,6 +8,7 @@ import 'package:pridesys_task/routes/routes.dart';
 import 'package:provider/provider.dart';
 
 import '../../character_list/model/character_response.dart';
+import '../../character_list/provider/character_list_provider.dart';
 import '../widgets/character_info.dart';
 import '../widgets/origin_info.dart';
 
@@ -17,133 +18,146 @@ class CharacterDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF19192d),
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text(
-          data.name ?? "",
-          style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
-            color: Colors.black,
-            fontSize: 16.sp,
-          ),
-        ),
-        leading: BackButton(
-          color: Colors.black,
-          onPressed: () {
-            // Back character screen
-            context.pop();
-          },
-        ),
+    return Consumer<CharacterListProvider>(
+      builder: (context, provider, child) {
+        final latestData = provider.results.firstWhere(
+          (element) => element.id == data.id,
+          orElse: () => data,
+        );
+        return Scaffold(
+          backgroundColor: Color(0xFF19192d),
+          appBar: AppBar(
+            centerTitle: false,
+            title: Text(
+              latestData.name ?? "",
+              style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
+                color: Colors.black,
+                fontSize: 16.sp,
+              ),
+            ),
+            leading: BackButton(
+              color: Colors.black,
+              onPressed: () {
+                // Back character screen
+                context.pop();
+              },
+            ),
 
-        actions: [
-          Consumer<FavoriteProvider>(
-            builder: (context, favoriteProvider, child) {
-              final bool isFav = favoriteProvider.isFavorite(data.id);
-              return IconButton(
-                onPressed: () {
-                  favoriteProvider.toggleFavorite(data);
+            actions: [
+              Consumer<FavoriteProvider>(
+                builder: (context, favoriteProvider, child) {
+                  final bool isFav = favoriteProvider.isFavorite(
+                    latestData.id,
+                  );
+                  return IconButton(
+                    onPressed: () {
+                      favoriteProvider.toggleFavorite(latestData);
+                    },
+                    color: isFav ? Colors.red : Colors.black,
+                    icon: Icon(
+                      isFav ? Icons.favorite : Icons.favorite_border_outlined,
+                    ),
+                  );
                 },
-                color: isFav ? Colors.red : Colors.black,
-                icon: Icon(
-                  isFav ? Icons.favorite : Icons.favorite_border_outlined,
-                ),
-              );
-            },
+              ),
+
+              SizedBox(width: 16.w),
+
+              IconButton(
+                onPressed: () {
+                  context.push(
+                    AppRoutes.updateCharacterScreen,
+                    extra: latestData,
+                  );
+                },
+                color: Colors.black,
+                icon: Icon(Icons.edit),
+              ),
+            ],
           ),
 
-          SizedBox(width: 16.w),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // Image
+                CustomCachedNetworkImage(
+                  imageUrl: latestData.image ?? "",
+                  width: double.infinity,
+                  height: 300.h,
+                ),
 
-          IconButton(
-            onPressed: () {
-              context.push(AppRoutes.updateCharacterScreen, extra: data);
-            },
-            color: Colors.black,
-            icon: Icon(Icons.edit),
+                SizedBox(height: 10.h),
+
+                // Name
+                Center(
+                  child: Text(
+                    latestData.name ?? "",
+                    style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
+                      fontSize: 20.sp,
+                    ),
+                  ),
+                ),
+
+                // Status
+                Center(
+                  child: Text(
+                    latestData.status ?? "",
+                    style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
+                      color: Colors.green,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                // Info
+                CharacterInfo(data: latestData),
+
+                SizedBox(height: 20.h),
+                // ORIGIN
+                Text(
+                  "ORIGIN",
+                  style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
+                    color: Colors.grey,
+                    fontSize: 14.sp,
+                  ),
+                ),
+
+                SizedBox(height: 6.h),
+                OriginInfo(title: latestData.origin?.name ?? ""),
+
+                SizedBox(height: 20.h),
+
+                // LAST LOCATION UNKNOWN
+                Text(
+                  "LAST KNOWN LOCATION",
+                  style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
+                    color: Colors.grey,
+                    fontSize: 14.sp,
+                  ),
+                ),
+                SizedBox(height: 6.h),
+                OriginInfo(title: latestData.location?.name ?? ""),
+
+                SizedBox(height: 20.h),
+
+                // LAST LOCATION UNKNOWN
+                Text(
+                  "Episod(${latestData.episode!.length.toString()})",
+                  style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
+                    color: Colors.grey,
+                    fontSize: 14.sp,
+                  ),
+                ),
+                SizedBox(height: 6.h),
+                // OriginInfo(),
+              ],
+            ),
           ),
-        ],
-      ),
-
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // Image
-            CustomCachedNetworkImage(
-              imageUrl: data.image ?? "",
-              width: double.infinity,
-              height: 300.h,
-            ),
-
-            SizedBox(height: 10.h),
-
-            // Name
-            Center(
-              child: Text(
-                data.name ?? "",
-                style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
-                  fontSize: 20.sp,
-                ),
-              ),
-            ),
-
-            // Status
-            Center(
-              child: Text(
-                data.status ?? "",
-                style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
-                  color: Colors.green,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            SizedBox(height: 20.h),
-            // Info
-            CharacterInfo(data: data),
-
-            SizedBox(height: 20.h),
-            // ORIGIN
-            Text(
-              "ORIGIN",
-              style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
-                color: Colors.grey,
-                fontSize: 14.sp,
-              ),
-            ),
-
-            SizedBox(height: 6.h),
-            OriginInfo(title: data.origin?.name ?? ""),
-
-            SizedBox(height: 20.h),
-
-            // LAST LOCATION UNKNOWN
-            Text(
-              "LAST KNOWN LOCATION",
-              style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
-                color: Colors.grey,
-                fontSize: 14.sp,
-              ),
-            ),
-            SizedBox(height: 6.h),
-            OriginInfo(title: data.location?.name ?? ""),
-
-            SizedBox(height: 20.h),
-
-            // LAST LOCATION UNKNOWN
-            Text(
-              "Episod(${data.episode!.length.toString()})",
-              style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
-                color: Colors.grey,
-                fontSize: 14.sp,
-              ),
-            ),
-            SizedBox(height: 6.h),
-            // OriginInfo(),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

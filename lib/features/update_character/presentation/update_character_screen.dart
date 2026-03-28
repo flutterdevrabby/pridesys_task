@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pridesys_task/common_widget/custom_network_image.dart';
 import 'package:pridesys_task/constants/text_font_style.dart';
+import 'package:pridesys_task/features/character_list/provider/character_list_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../../common_widget/custom_text_field.dart';
 import '../../character_list/model/character_response.dart';
@@ -58,13 +62,35 @@ class _UpdateCharacterScreenState extends State<UpdateCharacterScreen> {
         ),
 
         actions: [
-          MaterialButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                // Update Function
-              }
+          Consumer<CharacterListProvider>(
+            builder: (context, provider, child) {
+              return MaterialButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    // Update Function
+                    final updatedData = widget.data.copyWith(
+                      name: _nameController.text,
+                      status: _statusController.text,
+                      species: _specifyController.text,
+                      gender: _genderController.text,
+
+                      origin: widget.data.origin?.copyWith(
+                        name: _originController.text,
+                      ),
+                      location: widget.data.location?.copyWith(
+                        name: _locationController.text,
+                      ),
+                    );
+
+                    provider.updateCharacterLocally(updatedData);
+
+                    log("Updated successfully with name: ${updatedData.name}");
+                    context.pop();
+                  }
+                },
+                child: Text("Save"),
+              );
             },
-            child: Text("Save"),
           ),
         ],
       ),
@@ -72,6 +98,7 @@ class _UpdateCharacterScreenState extends State<UpdateCharacterScreen> {
       body: SingleChildScrollView(
         physics: ClampingScrollPhysics(),
         child: Form(
+          key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             spacing: 4.h,

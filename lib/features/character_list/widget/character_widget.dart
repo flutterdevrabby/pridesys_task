@@ -33,7 +33,7 @@ class CharacterWidget extends StatelessWidget {
         // Species
         Text(
           data.species ?? "N/A",
-          maxLines: 2,
+          maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
             fontSize: 12.sp,
@@ -44,7 +44,7 @@ class CharacterWidget extends StatelessWidget {
         // Status
         Text(
           data.status ?? "N/A",
-          maxLines: 2,
+          maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextFontStyle.headLine18CFFFFFFW700.copyWith(
             fontSize: 10.sp,
